@@ -1,0 +1,45 @@
+{% extends "base.html" %} {% block content %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="d-flex align-items-center justify-content-center">
+      <div class="card m-3 p-3 w-100">
+        <h5>Today's puzzle:</h5>
+        <p>
+          Make the number
+          <span class="badge bg-warning px-1 justify-content-center">
+            {{ target }}
+          </span>
+          using each of the numbers {% for num in numbers %}
+            <span class="badge bg-info px-1 justify-content-center">
+              {{ num }}
+            </span>
+          {% endfor %} and any of the operations {% for op in operations %}
+            <span class="badge bg-primary px-1 justify-content-center">
+              {{ op }}
+            </span>
+          {% endfor %}
+        </p>
+        <div class="input-group">
+          <input
+            type="text"
+            placeholder="Solution"
+            aria-describedby="button-addon2"
+            class="form-control {% if form.guess.errors %}is-invalid{% endif %}"
+            id="{{ form.guess.id_for_label }}"
+            name="{{ form.guess.html_name }}"
+            value=""
+          />
+          <input
+            class="btn btn-secondary"
+            type="submit"
+            id="button-addon2"
+            value="Submit"
+          />
+          {% if form.guess.errors %}
+            <div class="invalid-feedback">{{ form.guess.errors|join:", " }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </form>
+{% endblock %}

@@ -20,5 +20,10 @@ def index(request):
             pass
     else:
         form = GuessForm()
-    context = {"form": form}
+    context = {
+        "form": form,
+        "numbers": puzzle.numbers,
+        "target": puzzle.target,
+        "operations": puzzle.operations,
+    }
     return render(request, template_name="numble/index.html", context=context)
