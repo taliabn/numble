@@ -110,7 +110,7 @@ class GuessForm(forms.Form):
 
     numbers = Puzzle.numbers
     guess = forms.CharField(
-        label="cool label",
+        label="solution",
         max_length=30,
         validators=[
             MultiValidator(

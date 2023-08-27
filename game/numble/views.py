@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from .forms import GuessForm
+from .models import puzzle
 
 
 def index(request):
@@ -8,7 +9,7 @@ def index(request):
     generates home view for app
 
     Args:
-            request (HTTPResponse): django HTTP request
+        request (HTTPResponse): django's built-in base class to inherit from
 
     Returns:
             None
@@ -20,4 +21,4 @@ def index(request):
     else:
         form = GuessForm()
     context = {"form": form}
-    return render(request, template_name="mathapp/index.html", context=context)
+    return render(request, template_name="numble/index.html", context=context)
