@@ -14,11 +14,15 @@ def index(request):
     Returns:
             None
     """
+    context = {
+        "form": GuessForm(),
+        "numbers": puzzle.numbers,
+        "target": puzzle.target,
+        "operations": puzzle.operations,
+    }
     if request.method == "POST":
         form = GuessForm(request.POST)
+        context["form"] = form
         if form.is_valid():
-            pass
-    else:
-        form = GuessForm()
-    context = {"form": form}
+            return render(request, template_name="numble/win.html", context=context)
     return render(request, template_name="numble/index.html", context=context)

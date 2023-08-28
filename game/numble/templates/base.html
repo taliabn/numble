@@ -1,13 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>
-		Algebruh
-	</title>
-</head>
-	{% load static %}
-	<link rel="shortcut icon" href="{% static 'images/favico.ico' %}" type="image/png">
-	<h1>my cool app</h1>
-	{% block content %}
-	{% endblock %}
+<!doctype html>
+{% load static %}
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<html lang="en">
+  <head>
+    <title>Numble</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="{% static 'css/bootstrap.min.css' %}"
+      type="text/css"
+    />
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favico.ico' %}"
+      type="image/png"
+    />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar bg-primary px-2" data-bs-theme="dark" role="navigation">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Numble</a>
+        <button
+          type="button"
+          class="btn btn-outline-light"
+          data-bs-toggle="modal"
+          data-bs-target="#rulesModal"
+        >
+          Rules
+        </button>
+      </div>
+    </nav>
+    <!-- Rules modal -->
+    <div class="modal" id="rulesModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Game rules</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ul>
+              <li>The expression must evaluate to the correct target number</li>
+              <li>Only the digits in today's puzzle can be used</li>
+              <li>Each digit must be used exactly once</li>
+              <li>The only operations allowed are addition, subtraction, division, and multiplication</li>
+              <li>Numbers can't be concatenated (e.g. 1 and 2 can't be combined to make 12)</li>
+              <li>Hint: if necessary, use parantheses to indicate order of operations</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Content -->
+    {% block content %} {% endblock %}
+  </body>
 </html>
