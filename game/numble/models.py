@@ -1,6 +1,6 @@
+import itertools
 import random
 from datetime import datetime, timedelta, timezone
-from itertools import permutations
 
 
 class Puzzle:
@@ -30,41 +30,28 @@ class Puzzle:
         self.soln_map = {}
         res_list = []
 
-        perms = list(permutations(self.numbers))
-        for perm in perms:
-            for op1 in ops:
-                for op2 in ops:
-                    for op3 in ops:
-                        # (a + b) + (c + d)
-                        res_list.append(
-                            op2(
-                                "(" + op1(perm[0], perm[1]) + ")", "(" + op3(perm[2], perm[3]) + ")"
-                            )
-                        )
-                        # ((a + b) + c)) + d
-                        res_list.append(
-                            op3(
-                                "(" + op2("(" + op1(perm[0], perm[1]) + ")", perm[2]) + ")", perm[3]
-                            )
-                        )
-                        # (a + (b + c)) + d
-                        res_list.append(
-                            op3(
-                                "(" + op1(perm[0], "(" + op2(perm[1], perm[2]) + ")") + ")", perm[3]
-                            )
-                        )
-                        # a + ((b + c) + d)
-                        res_list.append(
-                            op1(
-                                perm[0], "(" + op3("(" + op2(perm[1], perm[2]) + ")", perm[3] + ")")
-                            )
-                        )
-                        # a + (b + (c + d))
-                        res_list.append(
-                            op1(
-                                perm[0], "(" + op3(perm[1], "(" + op2(perm[2], perm[3]) + ")") + ")"
-                            )
-                        )
+        for perm in itertools.permutations(self.numbers):
+            for op1, op2, op3 in itertools.product(ops, repeat=3):
+                # (a + b) + (c + d)
+                res_list.append(
+                    op2("(" + op1(perm[0], perm[1]) + ")", "(" + op3(perm[2], perm[3]) + ")")
+                )
+                # ((a + b) + c)) + d
+                res_list.append(
+                    op3("(" + op2("(" + op1(perm[0], perm[1]) + ")", perm[2]) + ")", perm[3])
+                )
+                # (a + (b + c)) + d
+                res_list.append(
+                    op3("(" + op1(perm[0], "(" + op2(perm[1], perm[2]) + ")") + ")", perm[3])
+                )
+                # a + ((b + c) + d)
+                res_list.append(
+                    op1(perm[0], "(" + op3("(" + op2(perm[1], perm[2]) + ")", perm[3] + ")"))
+                )
+                # a + (b + (c + d))
+                res_list.append(
+                    op1(perm[0], "(" + op3(perm[1], "(" + op2(perm[2], perm[3]) + ")") + ")")
+                )
 
         for res in res_list:
             try:
