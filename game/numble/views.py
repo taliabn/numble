@@ -1,7 +1,6 @@
 from django.shortcuts import render
 
-from .forms import GuessForm
-from .models import puzzle
+from .forms import GuessForm, puzzle
 
 
 def index(request):

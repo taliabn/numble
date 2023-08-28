@@ -7,6 +7,8 @@ from django.core.validators import RegexValidator
 
 from .models import Puzzle
 
+puzzle = Puzzle()
+
 
 class MultiValidator:
     """
@@ -62,7 +64,7 @@ def digit_count_validator(value: str):
          ValidationError: input is an invalid guess due to digit count
     """
     guess_counts = Counter(value)
-    number_counts = Counter(Puzzle.numbers)
+    number_counts = Counter(puzzle.numbers)
     for digit, count in number_counts.items():
         if guess_counts[digit] != count:
             raise ValidationError(
@@ -88,11 +90,11 @@ def correct_answer_validator(value: str):
     ).__call__(value)
 
     try:
-        answer = eval(value, {})  # pylint: disable=eval-used
+        answer = eval(value, {})
     except SyntaxError as exc:
         raise ValidationError(message="Bad syntax", code="python_syntax") from exc
 
-    if str(answer) != Puzzle.target:
+    if answer != puzzle.target:
         raise ValidationError(
             message="%(answer) i is the wrong answer",
             code="wrong_answer",
@@ -108,7 +110,7 @@ class GuessForm(forms.Form):
         forms (Form): django's base class to inherit from
     """
 
-    numbers = Puzzle.numbers
+    numbers = puzzle.numbers
     guess = forms.CharField(
         label="solution",
         max_length=30,
