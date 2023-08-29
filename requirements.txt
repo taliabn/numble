@@ -28,4 +28,5 @@ tomlkit==0.12.1
 tzdata==2023.3
 virtualenv==20.24.3
 wcwidth==0.2.6
+whitenoise==6.3.0
 zipp==3.16.2
