@@ -1,13 +1,7 @@
-# pylint: disable=anomalous-backslash-in-string
 from collections import Counter
 
-from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-
-from .models import Puzzle
-
-puzzle = Puzzle()
 
 
 class MultiValidator:
@@ -15,12 +9,13 @@ class MultiValidator:
     short-circuit evaluation of validators
     """
 
-    def __init__(self, validators):
+    def __init__(self, validators, kwargs: dict):
         self.validators = validators
+        self.kwargs = kwargs
 
     def __call__(self, value):
         for validator in self.validators:
-            validator(value)
+            validator(value, self.kwargs)
 
 
 class NoParenRegexValidator(RegexValidator):
@@ -47,12 +42,12 @@ class NoParenRegexValidator(RegexValidator):
         value = value.strip()
         return value
 
-    def __call__(self, value: str | None) -> None:
+    def __call__(self, value: str | None, kwargs: dict) -> None:
         value = self.clean(value)
         return super().__call__(value)
 
 
-def digit_count_validator(value: str):
+def digit_count_validator(value: str, kwargs: dict):
     """
     Validates that counts of each digit in the given string
     are the same as those of the current puzzle
@@ -64,7 +59,7 @@ def digit_count_validator(value: str):
          ValidationError: input is an invalid guess due to digit count
     """
     guess_counts = Counter(value)
-    number_counts = Counter(puzzle.numbers)
+    number_counts = Counter(kwargs["numbers"])
     for digit, count in number_counts.items():
         if guess_counts[digit] != count:
             raise ValidationError(
@@ -72,7 +67,7 @@ def digit_count_validator(value: str):
             )
 
 
-def correct_answer_validator(value: str):
+def correct_answer_validator(value: str, kwargs: dict):
     """
     Validates that given string evaluates to the same value as the answer to the current puzzle
 
@@ -84,64 +79,19 @@ def correct_answer_validator(value: str):
         ValidationError: input is an invalid guess due to digit count
     """
 
-    # for security reasons, format of string must be strictly checked first
+    # for security reasons, format of string must be strictly checked before calling `eval`
     NoParenRegexValidator(  # pylint: disable=unnecessary-dunder-call
         regex="([1-9][-+*\/]){3}[1-9]", message="Congrats, you found a bug!", code="invalid_other"
-    ).__call__(value)
+    ).__call__(value, kwargs)
 
     try:
         answer = eval(value, {})
     except SyntaxError as exc:
         raise ValidationError(message="Bad syntax", code="python_syntax") from exc
 
-    if answer != puzzle.target:
+    if answer != kwargs["target"]:
         raise ValidationError(
             message="%(answer) i is the wrong answer",
             code="wrong_answer",
             params={"answer": answer},
         )
-
-
-class GuessForm(forms.Form):
-    """
-    The form for the user to enter their answer to the puzzle
-
-    Args:
-        forms (Form): django's base class to inherit from
-    """
-
-    numbers = puzzle.numbers
-    guess = forms.CharField(
-        label="solution",
-        max_length=30,
-        validators=[
-            MultiValidator(
-                [
-                    NoParenRegexValidator(
-                        regex="^[1-9-+*\/]*$",
-                        message="The only allowable operations are: + - * /",
-                        code="invalid_op",
-                    ),
-                    NoParenRegexValidator(
-                        regex=f"^[{numbers[0]}{numbers[1]}{numbers[2]}{numbers[3]}\-+*\/]*$",
-                        message="Using numbers that aren't in today's puzzle is not allowed",
-                        code="invalid_num",
-                    ),
-                    NoParenRegexValidator(
-                        regex="^.*[1-9][1-9].*$",
-                        message="Concatenating digits is not allowed",
-                        inverse_match=True,
-                        code="concat_digits",
-                    ),
-                    NoParenRegexValidator(
-                        regex="^.*[-+*\/][-+*\/].*$",
-                        message="Concatenating operations is not allowed",
-                        inverse_match=True,
-                        code="concat_ops",
-                    ),
-                    digit_count_validator,
-                    correct_answer_validator,
-                ]
-            ),
-        ],
-    )

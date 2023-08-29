@@ -1,4 +1,5 @@
-game/db.sqlite3
+django-app/db.sqlite3
 __pycache__
 __init__.py
-game/numble/migrations
+django-app/numble/migrations
+.venv
