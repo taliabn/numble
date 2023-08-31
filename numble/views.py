@@ -16,6 +16,7 @@ def index(request):
     Returns:
             None
     """
+    puzzle.refresh()
     context = {
         "form": GuessForm(puzzle=puzzle),
         "numbers": puzzle.numbers,
