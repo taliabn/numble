@@ -58,10 +58,26 @@
               <li>Numbers can't be concatenated (e.g. 1 and 2 can't be combined to make 12)</li>
               <li>Hint: if necessary, use parantheses to indicate order of operations</li>
             </ul>
+            <p>
+              A new puzzle will be released daily at midnight UTC<span
+                id="hideIfJSNotEnabled" style="display:none"><span
+                  id="localtime"></span></span>.
+            </p>
           </div>
         </div>
       </div>
     </div>
+    <!-- Getting user's local timezone with django is a hassle, use Javascript instead -->
+    <script type="text/javascript">
+      document.getElementById('hideIfJSNotEnabled').style.display = 'inline';
+      const dt = new Date();
+      let diffTZ = dt.getTimezoneOffset();
+      let offset = Math.floor(diffTZ / 60);
+      dt.setHours(24);
+      dt.setHours(dt.getHours() - offset);
+      let timestring = dt.toLocaleTimeString('en-US', {hour: 'numeric', timeZoneName: "short", hour12: true});
+      document.getElementById("localtime").innerHTML = ", which is " + timestring;
+    </script>
     <!-- Content -->
     {% block content %} {% endblock %}
   </body>
