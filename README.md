@@ -15,16 +15,16 @@ source setup.sh
 
 To start a local server, from the root directory run:
 ```
-python django-app/manage.py runserver
+python manage.py runserver
 ```
 
 
 ## Deployment
 Numble is hosted and deployed with [fly.io](https://fly.io/)
 
-To deploy a new version, replace <django-secret-key> with the key value and run:
+To deploy a new version, use a secure django key and run:
 ```
-fly deploy --build-arg SECRET_KEY=<django-secret-key> --build-arg DJANGO_SETTINGS_MODULE=django-app.prod_settings
+fly deploy --build-arg SECRET_KEY=<django secret key> --build-arg DJANGO_SETTINGS_MODULE=django-app.prod_settings
 ```
 
 
