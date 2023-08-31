@@ -22,6 +22,7 @@ def index(request):
         "numbers": puzzle.numbers,
         "target": puzzle.target,
         "operations": puzzle.operations,
+        "puzzle_day": puzzle.puzzle_day,
     }
     if request.method == "POST":
         form = GuessForm(request.POST, puzzle=puzzle)

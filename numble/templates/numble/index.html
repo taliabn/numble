@@ -4,13 +4,13 @@
     {% csrf_token %}
     <div class="d-flex align-items-center justify-content-center">
       <div class="card m-3 p-3 w-100">
-        <h5>Today's puzzle:</h5>
+        <h5>Today is puzzle #<strong>{{ puzzle_day }}</strong></h5>
         <p>
           Make the number
           <span class="badge bg-warning px-1 justify-content-center">
             {{ target }}
           </span>
-          using each of the numbers {% for num in numbers %}
+          using each of the four numbers {% for num in numbers %}
             <span class="badge bg-info px-1 justify-content-center">
               {{ num }}
             </span>

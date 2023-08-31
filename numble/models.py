@@ -11,7 +11,12 @@ class Puzzle:
     def __init__(self) -> None:
         self.operations = ["+", "-", "/", "*"]
         # timezone is UTC
-        self.curr_time = datetime.now(tz=timezone(timedelta(hours=0))).strftime("%Y%m%d")
+        numble_start_day = datetime(
+            2023, 8, 29, tzinfo=timezone(timedelta(hours=0))
+        )  # date of numble's initial deployment
+        today = datetime.now(tz=timezone(timedelta(hours=0)))
+        self.puzzle_day = str((today - numble_start_day).days + 1)
+        self.curr_time = today.strftime("%Y%m%d")
         # solutions, numbers, target will be set by create_puzzle
         self.soln_map = {}
         self.solutions = None
