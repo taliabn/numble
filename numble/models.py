@@ -1,6 +1,9 @@
 import itertools
 import random
+from collections import namedtuple
 from datetime import datetime, timedelta, timezone
+
+Level = namedtuple("Level", ["rating", "numbers", "target", "solutions"])
 
 
 class Puzzle:
@@ -17,21 +20,20 @@ class Puzzle:
         today = datetime.now(tz=timezone(timedelta(hours=0)))
         self.puzzle_day = str((today - numble_start_day).days + 1)
         self.curr_time = today.strftime("%Y%m%d")
-        # solutions, numbers, target will be set by create_puzzle
+        # solutions, numbers, and levels will be set by create_puzzle
         self.soln_map = {}
-        self.solutions = None
         self.numbers = None
-        self.target = None
-        self.create_and_set_puzzle()
+        self.levels = {}
+        self.create_and_set_puzzles()
 
-    def create_and_set_puzzle(self) -> None:
+    def create_and_set_puzzles(self) -> None:
         """
         sets numbers, target, and solutions for the daily puzzle
         """
         random.seed(self.curr_time)
         self.numbers = [str(random.randint(1, 9)) for i in range(4)]
         self.generate_all_puzzles()
-        self.choose_puzzle()
+        self.choose_puzzles()
 
     def generate_all_puzzles(self) -> None:
         """
@@ -80,12 +82,22 @@ class Puzzle:
                 else:
                     self.soln_map[int(res_number)] = [res]
 
-    def choose_puzzle(self) -> None:
+    def choose_puzzles(self) -> None:
         """
         picks random target, solutions pair from puzzles dictionary
         """
-        self.target = random.choice(list(self.soln_map.keys()))
-        self.solutions = self.soln_map[self.target]
+        sorted_targets = list(self.soln_map.keys())
+        sorted_targets.sort(reverse=True, key=lambda x: len(self.soln_map[x]))
+        for i in sorted_targets:
+            print(f"{i}: {len(self.soln_map[i])}")
+        length = len(self.soln_map)
+        easy_target = random.choice(sorted_targets[: (length * 15) // 100])
+        medium_target = random.choice(sorted_targets[(length * 35) // 100 : (length * 65) // 100])
+        hard_target = random.choice(sorted_targets[(length * 90) // 100 :])
+        for target, difficulty in zip(
+            [easy_target, medium_target, hard_target], ["easy", "medium", "hard"]
+        ):
+            self.levels[difficulty] = Level(difficulty, self.numbers, target, self.soln_map[target])
 
     def refresh(self) -> None:
         """
@@ -96,4 +108,4 @@ class Puzzle:
         if today != self.curr_time:
             self.curr_time = today
             self.generate_all_puzzles()
-            self.choose_puzzle()
+            self.choose_puzzles()

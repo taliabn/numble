@@ -17,15 +17,15 @@ def index(request):
             None
     """
     puzzle.refresh()
+    level = puzzle.levels["easy"]
     context = {
-        "form": GuessForm(puzzle=puzzle),
-        "numbers": puzzle.numbers,
-        "target": puzzle.target,
+        "form": GuessForm(level=level),
+        "level": level,
         "operations": puzzle.operations,
         "puzzle_day": puzzle.puzzle_day,
     }
     if request.method == "POST":
-        form = GuessForm(request.POST, puzzle=puzzle)
+        form = GuessForm(request.POST, level=level)
         context["form"] = form
         if form.is_valid():
             return render(request, template_name="numble/win.html", context=context)
