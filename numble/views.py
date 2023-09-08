@@ -6,7 +6,7 @@ from .models import Puzzle
 puzzle = Puzzle()
 
 
-def index(request):
+def index(request, difficulty="easy"):
     """
     generates home view for app
 
@@ -17,12 +17,13 @@ def index(request):
             None
     """
     puzzle.refresh()
-    level = puzzle.levels["easy"]
+    level = puzzle.levels[difficulty]
     context = {
         "form": GuessForm(level=level),
         "level": level,
         "operations": puzzle.operations,
         "puzzle_day": puzzle.puzzle_day,
+        "difficulty": difficulty,
     }
     if request.method == "POST":
         form = GuessForm(request.POST, level=level)
