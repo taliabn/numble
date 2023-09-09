@@ -88,8 +88,6 @@ class Puzzle:
         """
         sorted_targets = list(self.soln_map.keys())
         sorted_targets.sort(reverse=True, key=lambda x: len(self.soln_map[x]))
-        for i in sorted_targets:
-            print(f"{i}: {len(self.soln_map[i])}")
         length = len(self.soln_map)
         easy_target = random.choice(sorted_targets[: (length * 15) // 100])
         medium_target = random.choice(sorted_targets[(length * 35) // 100 : (length * 65) // 100])
