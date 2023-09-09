@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from .forms import GuessForm
 from .models import Puzzle
@@ -6,7 +6,7 @@ from .models import Puzzle
 puzzle = Puzzle()
 
 
-def index(request, difficulty="easy"):
+def index(request, difficulty):
     """
     generates home view for app
 
@@ -31,3 +31,17 @@ def index(request, difficulty="easy"):
         if form.is_valid():
             return render(request, template_name="numble/win.html", context=context)
     return render(request, template_name="numble/index.html", context=context)
+
+
+def redirect_view(request):  # pylint: disable=unused-argument
+    """
+    redirects to home view with difficulty set to easy
+
+    Args:
+        request (HTTPResponse): django's built-in base class to inherit from
+
+    Returns:
+            None
+    """
+    response = redirect("index", difficulty="easy")
+    return response
