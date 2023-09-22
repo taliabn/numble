@@ -18,12 +18,19 @@ def index(request, difficulty):
     """
     puzzle.refresh()
     level = puzzle.levels[difficulty]
+    if difficulty == "easy":
+        next_difficulty = "medium"
+    elif difficulty == "medium":
+        next_difficulty = "hard"
+    else:
+        next_difficulty = "easy"
     context = {
         "form": GuessForm(level=level),
         "level": level,
         "operations": puzzle.operations,
         "puzzle_day": puzzle.puzzle_day,
         "difficulty": difficulty,
+        "next_difficulty": next_difficulty,
     }
     if request.method == "POST":
         form = GuessForm(request.POST, level=level)
