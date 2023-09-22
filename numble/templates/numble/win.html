@@ -4,11 +4,43 @@
   <div class="alert alert-dismissible alert-success m-3 align-items-center justify-content-center">
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     <div>
-      <p style="display: inline-block" class="py-0 my-1"><strong>Congratulations</strong>, you solved today's {{ difficulty }} puzzle!</p>
+      <p style="display: inline-block" class="py-0 my-1"><strong>Congratulations</strong>, you solved today's {{ difficulty }} puzzle!
+        <a href="#" id="share-button" class="text-primary ms-1" style="display: inline-block">Share<i class="bi bi-share ms-2"></i></a></p>
+    <!-- toast is only for browsers that don't support web share api -->
+      <div class="toast" id="textCopiedToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="position-relative">
+          <button type="button" class="btn-close pt-2 pe-2" data-bs-dismiss="toast" aria-label="Close">
+          </div>
+          <div class="toast-body">
+            Copied text to clipboard!
+          </div>
+        </div>
+      </div>
       <button id="next-puzzle" type="button" class="btn btn-primary btn-sm px-2 my-1 py-1">
         <a style="text-decoration: none;" href="{% url 'index' next_difficulty %}">Next Level</a>
         <i class="bi bi-chevron-right ms-2"></i>
       </button>
     </div>
-  </div>
+    <script>
+      let shareText = "I solved numble puzzle #" + document.getElementById("puzzle-day").innerHTML + "!\nPlay now at http://numble.fly.dev/play/"
+      const shareData = {
+        title: "Numble",
+        text: shareText,
+      }
+      const btn = document.getElementById("share-button");
+      const resultPara = document.getElementById("share-result");
+      btn.addEventListener("click", async () => {
+        if (navigator.share){
+          try {
+            await navigator.share (shareData); resultPara.textContent = "MDN shared successfully";
+          } catch (err) {
+            console.log("error sharing", err)
+          }}
+        else {
+          const textCopiedToast = document.getElementById('textCopiedToast')
+          const toastBootstrap = bootstrap.Toast.getOrCreateInstance(textCopiedToast)
+          toastBootstrap.show()
+        }
+      })
+    </script>
 {% endblock wincontent%}
