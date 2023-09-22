@@ -16,7 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+from numble.views import redirect_view  # pylint: disable=import-error
+
 urlpatterns = [
-    path("", include("numble.urls")),
+    path("play/", include("numble.urls")),
     path("admin/", admin.site.urls),
+    path("", redirect_view, name="redirect_view"),
 ]

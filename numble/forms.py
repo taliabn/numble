@@ -17,7 +17,7 @@ class GuessForm(forms.Form):
     """
 
     def __init__(self, *args, **kwargs):
-        puzzle = kwargs.pop("puzzle")  # models.Puzzle object
+        level = kwargs.pop("level")  # Level named tuple
         super().__init__(*args, **kwargs)
         self.fields["guess"] = forms.CharField(
             label="solution",
@@ -31,8 +31,8 @@ class GuessForm(forms.Form):
                             code="invalid_op",
                         ),
                         NoParenRegexValidator(
-                            regex=f"^[{puzzle.numbers[0]}{puzzle.numbers[1]}\
-                                	  {puzzle.numbers[2]}{puzzle.numbers[3]}\-+*\/]*$",
+                            regex=f"^[{level.numbers[0]}{level.numbers[1]}\
+                                	  {level.numbers[2]}{level.numbers[3]}\-+*\/]*$",
                             message="Using numbers that aren't in today's puzzle is not allowed",
                             code="invalid_num",
                         ),
@@ -51,7 +51,7 @@ class GuessForm(forms.Form):
                         digit_count_validator,
                         correct_answer_validator,
                     ],
-                    {"numbers": puzzle.numbers, "target": puzzle.target},
+                    {"numbers": level.numbers, "target": level.target},
                 ),
             ],
         )

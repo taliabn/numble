@@ -1,8 +1,14 @@
 {% extends "./index.html" %}
 
 {% block wincontent %}
-    <div class="alert alert-dismissible alert-success m-3">
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        <strong>Congratulations!</strong> You win!
+  <div class="alert alert-dismissible alert-success m-3 align-items-center justify-content-center">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div>
+      <p style="display: inline-block" class="py-0 my-1"><strong>Congratulations</strong>, you solved today's {{ difficulty }} puzzle!</p>
+      <button id="next-puzzle" type="button" class="btn btn-primary btn-sm px-2 my-1 py-1">
+        <a style="text-decoration: none;" href="{% url 'index' next_difficulty %}">Next Level</a>
+        <i class="bi bi-chevron-right ms-2"></i>
+      </button>
     </div>
+  </div>
 {% endblock wincontent%}
