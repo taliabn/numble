@@ -10,10 +10,26 @@ class Puzzle:
 
     def __init__(self) -> None:
         self.operations = ["+", "-", "/", "*"]
-        date_string = datetime.now(tz=timezone(timedelta(hours=5))).strftime("%Y%m%d")
-        random.seed(date_string)
-        self.numbers = [str(random.randint(1, 9)) for i in range(4)]
+        # timezone is UTC
+        numble_start_day = datetime(
+            2023, 8, 29, tzinfo=timezone(timedelta(hours=0))
+        )  # date of numble's initial deployment
+        today = datetime.now(tz=timezone(timedelta(hours=0)))
+        self.puzzle_day = str((today - numble_start_day).days + 1)
+        self.curr_time = today.strftime("%Y%m%d")
+        # solutions, numbers, target will be set by create_puzzle
+        self.soln_map = {}
+        self.solutions = None
+        self.numbers = None
+        self.target = None
+        self.create_and_set_puzzle()
 
+    def create_and_set_puzzle(self) -> None:
+        """
+        sets numbers, target, and solutions for the daily puzzle
+        """
+        random.seed(self.curr_time)
+        self.numbers = [str(random.randint(1, 9)) for i in range(4)]
         self.generate_all_puzzles()
         self.choose_puzzle()
 
@@ -27,7 +43,7 @@ class Puzzle:
             lambda l, r: l + "*" + r,
             lambda l, r: l + "/" + r,
         ]
-        self.soln_map = {}
+
         res_list = []
 
         for perm in itertools.permutations(self.numbers):
@@ -70,3 +86,14 @@ class Puzzle:
         """
         self.target = random.choice(list(self.soln_map.keys()))
         self.solutions = self.soln_map[self.target]
+
+    def refresh(self) -> None:
+        """
+        check if the day has changed (in UTC timezone),
+        and generate a new puzzle if so
+        """
+        today = datetime.now(tz=timezone(timedelta(hours=0))).strftime("%Y%m%d")
+        if today != self.curr_time:
+            self.curr_time = today
+            self.generate_all_puzzles()
+            self.choose_puzzle()

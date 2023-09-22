@@ -14,6 +14,10 @@
       type="text/css"
     />
     <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <link
       rel="shortcut icon"
       href="{% static 'images/favico.ico' %}"
       type="image/png"
@@ -24,16 +28,67 @@
     <nav class="navbar bg-primary px-2" data-bs-theme="dark" role="navigation">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">Numble</a>
-        <button
-          type="button"
-          class="btn btn-outline-light"
-          data-bs-toggle="modal"
-          data-bs-target="#rulesModal"
-        >
-          Rules
-        </button>
+        <div id="buttonsContainer">
+          <button
+            type="button"
+            class="btn btn-outline-light me-2"
+            data-bs-toggle="modal"
+            data-bs-target="#rulesModal"
+          >
+            Rules
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-light"
+            data-bs-toggle="modal"
+            data-bs-target="#aboutModal"
+          >
+            About
+          </button>
+        </div>
       </div>
     </nav>
+    <!-- Rules modal -->
+    <div class="modal" id="aboutModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">About Numble</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Numble is a casual daily arithmetic puzzle game that is loosely inpsired by wordle. It is currently in the early stages of development, so all features are subject to change</p>
+            <p>Found a bug or want to request a feature? Please create a github issue
+              <a href="https://github.com/taliabn/numble/issues"
+                 target="_blank"
+                 rel="noopener noreferrer">
+                here
+              </a>.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <p>Developed by Talia Ben-Naim</p>
+            <a href="https://github.com/taliabn/numble/"
+               target="_blank"
+               rel="noopener noreferrer">
+              <i class="bi bi-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/talia-ben-naim/"
+               target="_blank"
+               rel="noopener noreferrer">
+              <i class="bi bi-linkedin"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Rules modal -->
     <div class="modal" id="rulesModal">
       <div class="modal-dialog" role="document">
@@ -58,10 +113,26 @@
               <li>Numbers can't be concatenated (e.g. 1 and 2 can't be combined to make 12)</li>
               <li>Hint: if necessary, use parantheses to indicate order of operations</li>
             </ul>
+            <p>
+              A new puzzle will be released daily at midnight UTC<span
+                id="hideIfJSNotEnabled" style="display:none"><span
+                  id="localtime"></span></span>.
+            </p>
           </div>
         </div>
       </div>
     </div>
+    <!-- Getting user's local timezone with django is a hassle, use Javascript instead -->
+    <script type="text/javascript">
+      document.getElementById('hideIfJSNotEnabled').style.display = 'inline';
+      const dt = new Date();
+      let diffTZ = dt.getTimezoneOffset();
+      let offset = Math.floor(diffTZ / 60);
+      dt.setHours(24);
+      dt.setHours(dt.getHours() - offset);
+      let timestring = dt.toLocaleTimeString('en-US', {hour: 'numeric', timeZoneName: "short", hour12: true});
+      document.getElementById("localtime").innerHTML = ", which is " + timestring;
+    </script>
     <!-- Content -->
     {% block content %} {% endblock %}
   </body>
