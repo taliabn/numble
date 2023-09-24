@@ -81,9 +81,11 @@ def correct_answer_validator(value: str, kwargs: dict):
 
     # for security reasons, format of string must be strictly checked before calling `eval`
     NoParenRegexValidator(  # pylint: disable=unnecessary-dunder-call
-        regex="([1-9][-+*\/]){3}[1-9]", message="Congrats, you found a bug!", code="invalid_other"
+        regex="([1-9][-+*\/x%]){3}[1-9]", message="Congrats, you found a bug!", code="invalid_other"
     ).__call__(value, kwargs)
 
+    value = value.replace("x", "*")
+    value = value.replace("%", "/")
     try:
         answer = eval(value, {})
     except SyntaxError as exc:

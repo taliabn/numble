@@ -26,13 +26,13 @@ class GuessForm(forms.Form):
                 MultiValidator(
                     [
                         NoParenRegexValidator(
-                            regex="^[1-9-+*\/]*$",
+                            regex="^[1-9-+*\/x%]*$",
                             message="The only allowable operations are: + - * /",
                             code="invalid_op",
                         ),
                         NoParenRegexValidator(
                             regex=f"^[{level.numbers[0]}{level.numbers[1]}\
-                                	  {level.numbers[2]}{level.numbers[3]}\-+*\/]*$",
+                                	  {level.numbers[2]}{level.numbers[3]}\-+*\/x%]*$",
                             message="Using numbers that aren't in today's puzzle is not allowed",
                             code="invalid_num",
                         ),
@@ -43,7 +43,7 @@ class GuessForm(forms.Form):
                             code="concat_digits",
                         ),
                         NoParenRegexValidator(
-                            regex="^.*[-+*\/][-+*\/].*$",
+                            regex="^.*[-+*\/x%][-+*\/x%].*$",
                             message="Concatenating operations is not allowed",
                             inverse_match=True,
                             code="concat_ops",
